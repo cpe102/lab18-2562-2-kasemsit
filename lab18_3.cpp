@@ -9,6 +9,10 @@ using namespace std;
 
 struct student{
 	//Define struct student with four member (name ,id , gender, gpa);
+	string name;
+	int id;
+	char gender;
+	float gpa;
 };
 
 struct course{
@@ -18,9 +22,16 @@ struct course{
 	vector<student *> student_list;
 };
 
-student * findstudent(vector<student> allstudents,int key){ //Correct this line
+student * findstudent(vector<student> &allstudents,int key){ //Correct this line	
 	for(unsigned int i = 0; i < allstudents.size(); i++){
-		if(allstudents[i].id  == key) return &allstudents[i];
+
+		if(allstudents[i].id  == key) {
+
+			//cout << "xxxx"  << allstudents[i].id << " xxxx " << key << " " << (allstudents[i].id == key) << "\n"; 	
+			//cout << allstudents[i].name << "   xxxx\n";	
+			return &allstudents[i];
+
+		}
 	}
 }
 
@@ -33,8 +44,9 @@ void printreport(vector<course> allcourses){
 			if(j != 0) cout << ", ";
 			cout << allcourses[i].lecture_list[j];
 		} 
-		cout << "\n\nStudents:\t";
-		for(unsigned int j = 0; j < allcourses[i].student_list.size();j++){
+		cout << "\n\nStudents:\t";		
+		for(unsigned int j = 0; j < allcourses[i].student_list.size();j++){						
+			
 			if(j != 0) cout << "\t\t";
 			cout << setw(15) << left << allcourses[i].student_list[j]->name << "\t";
 			cout << allcourses[i].student_list[j]->id << "\t";
@@ -55,9 +67,12 @@ int main(){
 	string textline;
 	
 	while(getline(student_file,textline)){
-		student s; 
-	
+		student s; 	
 		//Assign value to the members of struct s;
+		char name[100]; //// Kasemsit
+		sscanf(textline.c_str(), "%[^,],%d,%c,%f", name, &s.id, &s.gender, &s.gpa);  //// Kasemsit
+		s.name = name;  //// Kasemsit
+		//cout << name << " " << s.id << " " << gender << " " << s.gpa << "\n";
 	
 		allstudents.push_back(s); 		
 	}
@@ -77,16 +92,33 @@ int main(){
 				state = 3;
 			}else{
 				//Append lecture_list;
+				allcourses[allcourses.size()-1].lecture_list.push_back(textline); //// Kasemsit
 			}			
 		}else{
 			if(textline == "---------------------------------------"){
 				state = 1;
 			}else{
-				student *p = findstudent(allstudents,atof(textline.c_str()));
-				//Append student_list;
+				
+				student *p = findstudent(allstudents,atoi(textline.c_str()));
+				//Append student_list;				
+				
+				//cout << p->name << "\n";
+				
+				//p = new student;
+				
+							
+				allcourses[allcourses.size()-1].student_list.push_back(p);  //// Kasemsit
+								
+				
+				//cout << allcourses[allcourses.size()-1].student_list.size() << '\n';
+				
+				//cout << allcourses[allcourses.size()-1].student_list[0]->name << '\n';
+				
+				//cout << *p << "yyyyyyyyy\n";
 			}
 		}
 	}
+	
 	printreport(allcourses);
 	
 }
